@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  MYSQL_ROOT_PASSWORD: P@ssw0rd
+kind: ConfigMap
+metadata:
+  name: db-env
+  namespace: registry

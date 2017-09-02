@@ -1,0 +1,152 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: harbor
+  name: harbor
+  namespace: registry
+spec:
+  selector:
+    matchLabels:
+      run: harbor
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: harbor
+    spec:
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - cp -f /adminserver_config/key /data/
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: init-adminserver
+        volumeMounts:
+        - mountPath: /adminserver_config/
+          name: adminserver
+        - mountPath: /data
+          name: data
+          subPath: adminserver
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: adminserver-env
+        image: vmware/harbor-adminserver:v1.1.2
+        imagePullPolicy: IfNotPresent
+        name: adminserver
+        volumeMounts:
+        - mountPath: /etc/adminserver
+          name: data
+          subPath: adminserver
+        - mountPath: /data
+          name: data
+      - envFrom:
+        - configMapRef:
+            name: jobservice-env
+        image: vmware/harbor-jobservice:v1.1.2
+        imagePullPolicy: IfNotPresent
+        name: jobservice
+        volumeMounts:
+        - mountPath: /etc/jobservice
+          name: jobservice
+        - mountPath: /var/log/jobs
+          name: data
+          subPath: job_logs
+      - envFrom:
+        - configMapRef:
+            name: ui-env
+        image: vmware/harbor-ui:v1.1.2
+        imagePullPolicy: IfNotPresent
+        name: ui
+        volumeMounts:
+        - mountPath: /etc/ui
+          name: ui
+        - mountPath: /etc/ui/ca
+          name: data
+          subPath: ca_download
+      - args:
+        - serve
+        - /etc/registry/config.yml
+        image: vmware/registry:2.6.1-photon
+        imagePullPolicy: IfNotPresent
+        name: registry
+        volumeMounts:
+        - mountPath: /etc/registry
+          name: registry
+        - mountPath: /storage
+          name: data
+          subPath: registry
+      - image: vmware/nginx:1.11.5-patched
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        volumeMounts:
+        - mountPath: /etc/nginx
+          name: nginx
+      dnsPolicy: ClusterFirst
+      hostAliases:
+      - hostnames:
+        - registry
+        - ui
+        - jobservice
+        - adminserver
+        ip: 127.0.0.1
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          name: jobservice
+        name: jobservice
+      - name: nginx
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: tls.key
+                path: cert/server.key
+              - key: tls.crt
+                path: cert/server.crt
+              name: harbor
+          - configMap:
+              items:
+              - key: nginx.conf
+                path: nginx.conf
+              name: nginx
+      - name: registry
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: root.crt
+              name: harbor
+          - configMap:
+              items:
+              - key: config.yml
+                path: config.yml
+              name: registry
+      - name: ui
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: tls.key
+                path: private_key.pem
+              name: harbor
+          - configMap:
+              items:
+              - key: key
+                path: key
+              - key: app.conf
+                path: app.conf
+              name: ui
+      - configMap:
+          name: adminserver
+        name: adminserver
+      - emptyDir:
+          sizeLimit: "0"
+        name: data

@@ -1,0 +1,18 @@
+{
+    "CN": "harbor",
+    "hosts": [
+        "harbor",
+        "registry.example.com",
+        "quay.io",
+        "gcr.io"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "O": "DockerRegistry"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  _REDIS_URL: redis:6379,30,,0
+  CONFIG_PATH: /etc/ui/app.conf
+  GODEBUG: netdns=cgo
+  JOBSERVICE_SECRET: Xv19fu84sNKVljYp
+  LOG_LEVEL: info
+  UI_SECRET: NgCKUejtheRqJXcG
+kind: ConfigMap
+metadata:
+  name: ui-env
+  namespace: registry

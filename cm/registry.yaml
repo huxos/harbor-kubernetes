@@ -1,0 +1,42 @@
+apiVersion: v1
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      level: info
+      fields:
+        service: registry
+    storage:
+        cache:
+            layerinfo: inmemory
+        swift:
+            authurl: http://<your-swift-host>:7480/auth/v1 #swift地址
+            username: registry:swift  #用户名
+            password: <your-password> #密码
+            container: registry
+        maintenance:
+            uploadpurging:
+                enabled: false
+        delete:
+            enabled: true
+    http:
+        addr: :5000
+        secret: placeholder
+    auth:
+      token:
+        issuer: harbor-token-issuer
+        realm: <https://registry.example.com/service/token> ## 更改为harbor访问地址
+        rootcertbundle: /etc/registry/root.crt
+        service: harbor-registry
+    notifications:
+      endpoints:
+          - name: harbor
+            disabled: false
+            url: http://ui/service/notifications
+            timeout: 3000ms
+            threshold: 5
+            backoff: 1s
+kind: ConfigMap
+metadata:
+  name: registry
+  namespace: registry

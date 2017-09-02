@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: mysql
+  name: mysql
+  namespace: registry
+spec:
+  selector:
+    matchLabels:
+      run: mysql
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: mysql
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: db-env
+        image: vmware/harbor-db:v1.1.2
+        imagePullPolicy: Always
+        name: db
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mysql-data

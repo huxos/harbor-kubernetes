@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  key: Ii7BdFjfK5FSxJRv
+kind: ConfigMap
+metadata:
+  name: adminserver
+  namespace: registry

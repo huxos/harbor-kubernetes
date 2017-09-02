@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  CONFIG_PATH: /etc/jobservice/app.conf
+  GODEBUG: netdns=cgo
+  JOBSERVICE_SECRET: Xv19fu84sNKVljYp
+  LOG_LEVEL: info
+  UI_SECRET: NgCKUejtheRqJXcG
+kind: ConfigMap
+metadata:
+  name: jobservice-env
+  namespace: registry

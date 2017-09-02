@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  app.conf: |
+    appname = Harbor
+    runmode = dev
+    enablegzip = true
+
+    [dev]
+    httpport = 81
+  key: Ii7BdFjfK5FSxJRv
+kind: ConfigMap
+metadata:
+  name: ui
+  namespace: registry

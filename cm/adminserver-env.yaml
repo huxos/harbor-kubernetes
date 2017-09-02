@@ -1,0 +1,47 @@
+apiVersion: v1
+data:
+  _REDIS_URL: redis:6379,30,,0
+  ADMIRAL_URL: NA
+  AUTH_MODE: db_auth
+  CFG_EXPIRATION: "5"
+  DATABASE_TYPE: mysql
+  EMAIL_FROM: harbor <harbor@example.com>
+  EMAIL_HOST: smtp.example.com
+  EMAIL_IDENTITY: ""
+  EMAIL_PORT: "25"
+  EMAIL_PWD: ""
+  EMAIL_SSL: "false"
+  EMAIL_USR: harbor@example.com
+  EXT_ENDPOINT: <https://registry.example.com> ##更改为harbor访问地址
+  GODEBUG: netdns=cgo
+  HARBOR_ADMIN_PASSWORD: P@ssw0rd
+  JOBSERVICE_SECRET: Xv19fu84sNKVljYp
+  LDAP_BASE_DN: ou=Users,dc=example,dc=com
+  LDAP_FILTER: (memberOf=cn=Harbor,ou=Groups,dc=example,dc=com)
+  LDAP_SCOPE: "3"
+  LDAP_SEARCH_DN: cn=readonly,dc=example,dc=com
+  LDAP_SEARCH_PWD: P@ssw0rd
+  LDAP_TIMEOUT: "5"
+  LDAP_UID: uid
+  LDAP_URL: ldaps://ldap.example.com
+  LOG_LEVEL: info
+  MAX_JOB_WORKERS: "3"
+  MYSQL_DATABASE: registry
+  MYSQL_HOST: mysql
+  MYSQL_PORT: "3306"
+  MYSQL_PWD: P@ssw0rd
+  MYSQL_USR: root
+  PORT: "82"
+  PROJECT_CREATION_RESTRICTION: adminonly
+  REGISTRY_URL: http://registry:5000
+  RESET: "false"
+  SELF_REGISTRATION: "on"
+  TOKEN_EXPIRATION: "30"
+  TOKEN_SERVICE_URL: http://ui/service/token
+  UI_SECRET: NgCKUejtheRqJXcG
+  VERIFY_REMOTE_CERT: "on"
+  WITH_NOTARY: "False"
+kind: ConfigMap
+metadata:
+  name: adminserver-env
+  namespace: registry
