@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: 1024M
+    ingress.kubernetes.io/secure-backends: "true"
+  name: harbor-tls
+  namespace: registry
+spec:
+  rules:
+  - host: registry.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: harbor
+          servicePort: 443
+        path: /
+  tls:
+  - hosts:
+    - registry.example.com
+    secretName: harbor
