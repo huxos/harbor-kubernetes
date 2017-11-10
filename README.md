@@ -66,6 +66,9 @@ mysql单独部署，根据StorageClass配置持久存储。
 
     #部署harbor
     kubectl create -f harbor.deploy.yaml
+	
+    #部署ingresses
+    kubectl create -f ing/harbor.ing.yaml 
     ```
 6. 配置docker
 
